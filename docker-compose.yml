@@ -57,7 +57,7 @@ services:
     volumes:
       - ./alertmanager/:/etc/alertmanager/
     networks:
-      - back-tier
+      - back-tiersh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     restart: unless-stopped
     command:
       - '--config.file=/etc/alertmanager/config.yml'
