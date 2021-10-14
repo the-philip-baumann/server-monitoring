@@ -25,10 +25,10 @@ services:
     ports:
       - '9090:9090'
     links:
-#      - cadvisor:cadvisor
+      #      - cadvisor:cadvisor
       - alertmanager:alertmanager
-#    depends_on:
-#      - cadvisor
+    #    depends_on:
+    #      - cadvisor
     networks:
       - back-tier
     restart: unless-stopped
@@ -66,20 +66,20 @@ services:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
 
-#  cadvisor:
-#    image: gcr.io/cadvisor/cadvisor
-#    volumes:
-#      - /:/rootfs:ro
-#      - /var/run:/var/run:rw
-#      - /sys:/sys:ro
-#      - /var/lib/docker/:/var/lib/docker:ro
-#    ports:
-#      - '8080:8080'
-#    networks:
-#      - back-tier
-#    restart: unless-stopped
-#    deploy:
-#      mode: global
+  #  cadvisor:
+  #    image: gcr.io/cadvisor/cadvisor
+  #    volumes:
+  #      - /:/rootfs:ro
+  #      - /var/run:/var/run:rw
+  #      - /sys:/sys:ro
+  #      - /var/lib/docker/:/var/lib/docker:ro
+  #    ports:
+  #      - '8080:8080'
+  #    networks:
+  #      - back-tier
+  #    restart: unless-stopped
+  #    deploy:
+  #      mode: global
 
   grafana:
     image: grafana/grafana
@@ -129,7 +129,8 @@ services:
     image: certbot/certbot:latest
     container_name: server-monitoring-letsencrypt
     command:
-      - 'command: certonly --webroot -w /var/www/html -d www.examplecom -d examplecom --non-interactive --agree-tos -m example@example.com'
+      - 'certonly --webroot -w /var/www/html -d www.css-appli18.com -d cssappli-18com --non-interactive --agree-tos -m postmaster@css-appli18.com'
+      - './setup.sh email add postmaster@css-appli18.com testee'
     restart: unless-stopped
     volumes:
       - ./docker-data/certbot/certs/:/etc/letsencrypt
