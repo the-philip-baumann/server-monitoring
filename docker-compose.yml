@@ -11,6 +11,7 @@ networks:
 services:
   prometheus:
     image: prom/prometheus:v2.30.3
+    container_name: server-monitoring-prometheus
     volumes:
       - ./prometheus/:/etc/prometheus/
       - prometheus_data:/prometheus
@@ -35,6 +36,7 @@ services:
 
   node-exporter:
     image: prom/node-exporter:v1.2.2
+    container_name: server-monitoring-node-exporter
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -52,6 +54,7 @@ services:
 
   alertmanager:
     image: prom/alertmanager
+    container_name: server-monitoring-alertmanager
     ports:
       - '9093:9093'
     volumes:
@@ -80,6 +83,7 @@ services:
 
   grafana:
     image: grafana/grafana
+    container_name: server-monitoring-grafana
     user: "472"
     depends_on:
       - prometheus
@@ -98,7 +102,7 @@ services:
 
   mailserver:
     image: docker.io/mailserver/docker-mailserver:latest
-    container_name: mailserver
+    container_name: server-monitoring-mailserver
     hostname: mail
     domainname: css-appli18.com
     env_file: mailserver/mailserver.env
@@ -114,8 +118,21 @@ services:
       - ./docker-data/dms/mail-logs/:/var/log/mail/
       - ./docker-data/dms/config/:/tmp/docker-mailserver/
       - /etc/localtime:/etc/localtime:ro
+      - /etc/letsencrypt:/etc/letsencrypt
     restart: always
     stop_grace_period: 1m
     cap_add:
       - NET_ADMIN
       - SYS_PTRACE
+
+  letsencrypt:
+    image: certbot/certbot:latest
+    container_name: server-monitoring-letsencrypt
+    command:
+      - 'command: certonly --webroot -w /var/www/html -d www.examplecom -d examplecom --non-interactive --agree-tos -m example@example.com'
+    restart: unless-stopped
+    volumes:
+      - ./docker-data/certbot/certs/:/etc/letsencrypt
+      - ./docker-data/certbot/logs/:/var/log/letsencrypt
+    ports:
+      - '80:80'
