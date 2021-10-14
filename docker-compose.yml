@@ -49,8 +49,6 @@ services:
     networks:
       - back-tier
     restart: unless-stopped
-    deploy:
-      mode: global
 
   alertmanager:
     image: prom/alertmanager
